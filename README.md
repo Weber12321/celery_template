@@ -11,7 +11,7 @@ $ cd celery_template
 ```bash
 $ vim .env
 
-BROKER=redis://<ip>:6379
+REDIS=redis://<ip>:6379/0
 ```
 
 ```bash
@@ -24,6 +24,10 @@ $ docker exec -it celery_client bash
 $ python
 
 >>> from app import sample_task
->>> sample_task.apply_async(args=(1234, ), queue=<worker_machine_queue>)
+>>> from celery.result import AsyncResult
+>>> sample_task.apply_async(args=(1234, ), queue='A_queue')
+>>> task_id = sample_task.id
+>>> result = AsyncResult(task_id)
+>>> result.get()
 ```
 
