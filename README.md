@@ -17,7 +17,7 @@ REDIS=redis://<ip>:6379/0
 ```bash
 $ docker build -t ychuang/celery_client --no-cache .
 
-$ docker run -it -d --name celery_client ychuang/celery_client
+$ docker run -it -d --name celery_client --env-file .env ychuang/celery_client
 
 $ docker exec -it celery_client bash
 
