@@ -1,22 +1,37 @@
-import os
-
-from dotenv import load_dotenv
 from celery import Celery
 
-load_dotenv('.env')
 
 app = Celery(
     name='proj_B',
-    broker=os.getenv('REDIS'),
-    backend=os.getenv('REDIS')
+    broker="redis://localhost:6379"
 )
 
 app.conf.task_routes = {
-    'A.*': {'queue': 'A_queue'},
-    'B.*': {'queue': 'B_queue'},
+    'app.training': {'queue': 'training'},
+    'app.predict': {'queue': 'predict'},
 }
 
 
-@app.task
-def sample_task(value):
+@app.task(bind=True, queue='training', name='training')
+def training(
+        model_name,
+        version,
+        dataset,
+        label_col,
+        learning_rate,
+        epochs,
+        batch_size,
+        max_len,
+        is_multi_label
+):
+    pass
+
+
+@app.task(bind=True, queue='predict', name='predict')
+def predict(
+        model_name,
+        version,
+        max_len,
+        dataset
+):
     pass
